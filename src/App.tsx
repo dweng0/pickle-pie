@@ -23,7 +23,7 @@ const App: React.FunctionComponent = () => {
     *  Handle toggling of dark mode and light mode
     * ************************************************************************
     */
-    const [mode, setMode] = React.useState<"light" | "dark">("light");
+    const [mode, setMode] = React.useState<"light" | "dark">("dark");
 
     // use a memo to handle toggling, causing app to re render with new mode applied.
     const colorMode = React.useMemo(
