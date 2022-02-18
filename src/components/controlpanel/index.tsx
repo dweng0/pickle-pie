@@ -1,31 +1,33 @@
 import React, { JSXElementConstructor, ReactElement } from 'react';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
 
-import Button from '@mui/material/Button';
-
-import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
-
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
 import EventIcon from '@mui/icons-material/Event';
 import DateRange from '@mui/icons-material/DateRange';
 import MeetingRoom from '@mui/icons-material/MeetingRoom';
 import Groups from '@mui/icons-material/Groups';
-//Hail
-import Grid from '@mui/material/Grid';
 import formFactory from './formfactory';
+import pushQuery from '../../service/querybuilder';
+
+const CAPACITY = 'capacity';
+const START_DATE_TIME = 'from';
+const END_DATE_TIME = 'to';
+const ROOM = 'room';
 
 const ControlPanel: React.FunctionComponent = () => {
 
-    const handleChange = (key) => (e:any) => console.log(key, e);
+    const handleChange = (key) => (value: any) => {
+        pushQuery({ key, value });
+    };
 
+    const queryString = window.location.search;
+    const query = new URLSearchParams(queryString);
 
-    const capacity = formFactory('capacity', 'Capacity', <Groups />, handleChange('capacity'), '15.5ch');
-    const fromDate = formFactory('from', 'From', <EventIcon />, handleChange('from'));
-    const toDate = formFactory('to', 'To', <DateRange />, handleChange('to'));
-    const room = formFactory('room', 'Room', <MeetingRoom />, handleChange('room'), '15.5ch');
+    const inputForKey = (key: string, label: string, Icon: React.ReactElement, width?: string, type?: string) => formFactory(key, label, query.get(key), Icon, handleChange(key), width, type);
+
+    const capacity = inputForKey(CAPACITY, 'Capacity', <Groups/>, '15.5ch', 'number');
+    const fromDate = inputForKey(START_DATE_TIME, 'From', <EventIcon />, );
+    const toDate = inputForKey(END_DATE_TIME, 'To', <DateRange />);
+    const room = inputForKey(ROOM, 'Room', <MeetingRoom />, '15.5ch');
 
     return (
         
