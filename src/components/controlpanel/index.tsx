@@ -1,12 +1,15 @@
 import React, { JSXElementConstructor, ReactElement } from 'react';
 import Box from '@mui/material/Box';
 
-import EventIcon from '@mui/icons-material/Event';
-import DateRange from '@mui/icons-material/DateRange';
 import MeetingRoom from '@mui/icons-material/MeetingRoom';
 import Groups from '@mui/icons-material/Groups';
-import formFactory from './formfactory';
+import { inputFactory, dateFactory  } from './formfactory';
 import pushQuery from '../../service/querybuilder';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+
+import TextField from '@mui/material/TextField';
 
 const CAPACITY = 'capacity';
 const START_DATE_TIME = 'from';
@@ -22,19 +25,22 @@ const ControlPanel: React.FunctionComponent = () => {
     const queryString = window.location.search;
     const query = new URLSearchParams(queryString);
 
-    const inputForKey = (key: string, label: string, Icon: React.ReactElement, width?: string, type?: string) => formFactory(key, label, query.get(key), Icon, handleChange(key), width, type);
+    const inputForString = (key: string, label: string, Icon: React.ReactElement, width?: string, type?: string) => inputFactory(key, label, query.get(key), Icon, handleChange(key), width, type);
+    const inputForDate = (key: string, label: string) => dateFactory(key, label, handleChange(key));
 
-    const capacity = inputForKey(CAPACITY, 'Capacity', <Groups/>, '15.5ch', 'number');
-    const fromDate = inputForKey(START_DATE_TIME, 'From', <EventIcon />, );
-    const toDate = inputForKey(END_DATE_TIME, 'To', <DateRange />);
-    const room = inputForKey(ROOM, 'Room', <MeetingRoom />, '15.5ch');
+    const capacity = inputForString(CAPACITY, 'Capacity', <Groups/>, '15.5ch', 'number');
+    const room = inputForString(ROOM, 'Room', <MeetingRoom />, '15.5ch');
+    const fromDate = inputForDate(START_DATE_TIME, 'From');
+    const toDate = inputForDate(END_DATE_TIME, 'To');
 
     return (
         
         <Box>
             {capacity}
-            {fromDate}
-            {toDate}
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                {fromDate}
+                {toDate}
+            </LocalizationProvider>
             {room}
         </Box>
     )

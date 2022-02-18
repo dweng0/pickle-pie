@@ -1,7 +1,22 @@
 import { FormControl, InputLabel, OutlinedInput, InputAdornment } from "@mui/material";
 import { ReactElement, useState } from "react";
 
-const InputFactory = (key: string, label: string, initialValue:string = '', Icon: ReactElement, handleChange: (event: any) => void, width: string = '25ch', type='text') => {
+import TextField from '@mui/material/TextField';
+
+import DateTimePicker from '@mui/lab/DateTimePicker';
+
+export const dateFactory = (key: string, label: string, onChange) => {
+    <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" >
+        <DateTimePicker
+            label={label}
+            value={key}
+            onChange={onChange}
+            renderInput={(params) => <TextField {...params} />}
+        />
+    </FormControl>
+}
+
+export const inputFactory = (key: string, label: string, initialValue:string = '', Icon: ReactElement, handleChange: (event: any) => void, width: string = '25ch', type='text') => {
     const [value, setValue] = useState(initialValue);
     const onChange = (event) => {
         setValue(event.target.value);
@@ -26,4 +41,3 @@ const InputFactory = (key: string, label: string, initialValue:string = '', Icon
         )
    
 }
-export default InputFactory;
