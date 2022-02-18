@@ -10,8 +10,9 @@ export const generateRoomsFromSeed = (seed: number) => {
     const [numberOfRooms, capacitySeed, nameSeed] = seedFromCollatzConjecture(seed, 3);
     const capacityList = seedFromCollatzConjecture(capacitySeed, numberOfRooms);
     const nameList = seedFromCollatzConjecture(nameSeed, numberOfRooms);
-    
-    for (let i = 0; i < numberOfRooms; i++) {
+
+    // cap at 40 rooms
+    for (let i = 0; i < 40; i++) {
         rooms.push({
             capacity: capacityList[i],
             name: String.fromCharCode(nameList[i]),
