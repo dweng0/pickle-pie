@@ -5,11 +5,11 @@ import TextField from '@mui/material/TextField';
 
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
 import TimePicker from "@mui/lab/MobileTimePicker";
+import Autocomplete from '@mui/material/Autocomplete';
 
 export const timeFactory = (key: string, label: string, onChange, initialValue: string = dayjs().format()) => {
     
     const [value, setValue] = useState(initialValue);
-    console.log(value);
     const localOnChange = (value) => {
         setValue(value);
         return onChange(value);
@@ -65,9 +65,23 @@ export const inputFactory = (key: string, label: string, initialValue:string = '
                         {Icon}
                     </InputAdornment>
                 }
-                label = {key}
+                label={key}
             />
         </FormControl>
-        )
-   
+    );   
+}
+
+export const autoCompleteFactory = (key: string, label: string, onChange, list) => {
+    
+    return (
+        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" >
+           
+            <Autocomplete
+                disablePortal
+                id={key}
+                options={list}
+                renderInput={(params) => <TextField {...params} label={label} />}
+            />
+        </FormControl>
+    );
 }
