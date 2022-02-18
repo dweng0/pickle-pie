@@ -6,14 +6,22 @@ import TextField from '@mui/material/TextField';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 
 export const dateFactory = (key: string, label: string, onChange) => {
-    <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" >
-        <DateTimePicker
-            label={label}
-            value={key}
-            onChange={onChange}
-            renderInput={(params) => <TextField {...params} />}
-        />
-    </FormControl>
+    const [value, setValue] = useState('');
+    const localOnChange = (value) => {
+        setValue(value);
+        return onChange(value);
+    }
+    return (
+        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" >
+            <DateTimePicker
+                label={label}
+                value={value}
+                onChange={localOnChange}
+                renderInput={(params) => <TextField {...params} />}
+            />
+        </FormControl>
+    );
+    
 }
 
 export const inputFactory = (key: string, label: string, initialValue:string = '', Icon: ReactElement, handleChange: (event: any) => void, width: string = '25ch', type='text') => {
