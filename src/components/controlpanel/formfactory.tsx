@@ -75,7 +75,6 @@ export const autoCompleteFactory = (key: string, label: string, onChange, list) 
     
     return (
         <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" >
-           
             <Autocomplete
                 disablePortal
                 id={key}

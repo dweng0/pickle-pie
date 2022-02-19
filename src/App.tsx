@@ -8,8 +8,8 @@ import CssBaseline      from "@mui/material/CssBaseline";
 import Container        from "@mui/material/Container";
 import AppBar           from "./components/appbar";
 import ControlPanel     from "./components/controlpanel";
-import BookingState from './components/bookingstage';
-
+import BookingState     from './components/bookingstage';
+import ListComponent    from './components/list';
 import './App.css';
 import logo from './logo.png';
 import { api } from './constants';
@@ -94,10 +94,7 @@ const App: React.FunctionComponent = () => {
                         {loading ? <CircularProgress className="splash-image" /> : <img className="splash-image" src={logo} alt="Event Rent Logo" />}
                         <ControlPanel roomNames={rooms.map(item => item.name)}/>
                         <BookingState/>
-                        
-                        <div>
-                            List panel
-                        </div>
+                        <ListComponent rooms={rooms}/>
                     </div>
                 </Container>
             </ThemeProvider>

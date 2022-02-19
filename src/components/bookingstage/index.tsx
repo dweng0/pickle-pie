@@ -6,8 +6,9 @@ import StepLabel from '@mui/material/StepLabel';
 
 const steps = [
     'Capacity',
-    'Start',
-    'End',
+    'Date',
+    'Start time',
+    'End Time',
     'Room'
 ];
 

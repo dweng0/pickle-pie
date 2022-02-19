@@ -24,7 +24,7 @@ export const generateRoomsFromSeed = (seed: number) => {
         rooms.push({
             capacity: capacityList[i],
             name: uniqueNamesGenerator(config),
-            image: 'https://loremflickr.com/240/240'
+            image: 'https://via.placeholder.com/200'
         });
     }
     return rooms;
