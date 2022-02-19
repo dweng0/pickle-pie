@@ -68,7 +68,6 @@ const App: React.FunctionComponent = () => {
 
     useEffect(() => {
         const doFetch = () => {
-            debugger;
             fetch(api.rooms)
                 .then(setResponse('room'))
                 .catch(handleError)

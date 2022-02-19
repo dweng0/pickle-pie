@@ -7,7 +7,7 @@ export interface UrlQuery {
  * wraps pushstate functionality and ands url encoding
  * @param queryParam
  */
-const pushQuery = (queryParam: UrlQuery) => {
+export const pushQuery = (queryParam: UrlQuery): void => {
 
     const key   = encodeURIComponent(queryParam.key);
     const value = encodeURIComponent(queryParam.value);
@@ -17,4 +17,18 @@ const pushQuery = (queryParam: UrlQuery) => {
 
     window.history.pushState({}, '', url.toString());
 }
-export default pushQuery;
+
+/**
+ * 
+ * Wraps url search api and provide url decoding
+ * @param key
+ */
+export const getQuery = (key: string): string => {
+    const queryString = window.location.search;
+    const result = new URLSearchParams(queryString).get(key);
+    if (result) {
+        return decodeURIComponent(result.toString());
+    } else {
+        return null;
+    }    
+}

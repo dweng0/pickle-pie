@@ -4,10 +4,12 @@ import Box from '@mui/material/Box';
 import MeetingRoom from '@mui/icons-material/MeetingRoom';
 import Groups from '@mui/icons-material/Groups';
 import { inputFactory, dateFactory, timeFactory, autoCompleteFactory } from './formfactory';
-import pushQuery from '../../service/querybuilder';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { pushQuery, getQuery} from '../../service/querybuilder';
+import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { ControlPanelProps } from './interface';
+import dayjs from 'dayjs';
+import { URL_DATE_FORMAT, URL_TIME_FORMAT } from '../../constants';
 
 const CAPACITY = 'capacity';
 const START_DATE_TIME = 'from';
@@ -21,15 +23,33 @@ const ControlPanel: React.FunctionComponent<ControlPanelProps> = ({ roomNames, s
         pushQuery({ key, value });
     };
 
-    const queryString = window.location.search;
-    const query = new URLSearchParams(queryString);
+    const handleChangeForDates = (key) => (value: any) => {
+        if (value) {
+            try {
+                pushQuery({ key, value: dayjs(value).format(URL_DATE_FORMAT).toString() });
+            } catch {
+                console.log('Todo capture failed event');
+            }
+        }
+    }
+
+    const handleChangeForTime = (key) => (value: any) => {
+        if (value) {
+            try {
+                pushQuery({ key, value: dayjs(value).format(URL_TIME_FORMAT).toString() });
+            } catch {
+                console.log('Todo capture failed event');
+            }
+        }
+    }
+
 
     /**
      * HoC functions that call relevant input factories
      */
-    const inputForString = (key: string, label: string, Icon: React.ReactElement, width?: string, type?: string) => inputFactory(key, label, query.get(key), Icon, handleChange(key), width, type);
-    const inputForDate = (key: string, label: string) => dateFactory(key, label, handleChange(key));
-    const inputForTime = (key: string, label: string) => timeFactory(key, label, handleChange(key));
+    const inputForString = (key: string, label: string, Icon: React.ReactElement, width?: string, type?: string) => inputFactory(key, label, getQuery(key), Icon, handleChange(key), width, type);
+    const inputForDate = (key: string, label: string) => dateFactory(key, label, handleChangeForDates(key), getQuery(key));
+    const inputForTime = (key: string, label: string) => timeFactory(key, label, handleChangeForTime(key), getQuery(key));
     const inputForAutoComplete = (key: string, label: string, suggestions: Array<string>) => autoCompleteFactory(key, label, handleChange(key), suggestions);
 
     /**
@@ -45,7 +65,7 @@ const ControlPanel: React.FunctionComponent<ControlPanelProps> = ({ roomNames, s
     return (
         <Box>
             {capacity}
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
                 {fromDate}
                 {startTime}
                 {endTime}
