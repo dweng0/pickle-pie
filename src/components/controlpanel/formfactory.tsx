@@ -10,7 +10,7 @@ import { URL_DATE_FORMAT, URL_TIME_FORMAT } from "../../constants";
 
 export const timeFactory = (key: string, label: string, onChange, initialValue: string = dayjs().format(URL_TIME_FORMAT)) => {
 
-    const [value, setValue] = useState(dayjs(initialValue, URL_TIME_FORMAT));
+    const [value, setValue] = useState(initialValue ? dayjs(initialValue, URL_TIME_FORMAT) : null);
     const localOnChange = (value) => {
         setValue(value);
         return onChange(value);
@@ -29,7 +29,7 @@ export const timeFactory = (key: string, label: string, onChange, initialValue: 
 
 export const dateFactory = (key: string, label: string, onChange, initialValue: string = dayjs().format(URL_DATE_FORMAT)) => {
   
-    const [value, setValue] = useState(dayjs(initialValue, URL_DATE_FORMAT));
+    const [value, setValue] = useState((initialValue) ? dayjs(initialValue, URL_DATE_FORMAT) : null);
     const localOnChange = (value) => {
         setValue(value);
         return onChange(value);

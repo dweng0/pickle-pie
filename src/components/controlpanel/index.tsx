@@ -23,7 +23,7 @@ const ControlPanel: React.FunctionComponent<ControlPanelProps> = ({ roomNames, s
         pushQuery({ key, value });
     };
 
-    const handleChangeForDates = (key) => (value: any) => {
+    const handleChangeForDate = (key) => (value: any) => {
         if (value) {
             try {
                 pushQuery({ key, value: dayjs(value).format(URL_DATE_FORMAT).toString() });
@@ -48,7 +48,7 @@ const ControlPanel: React.FunctionComponent<ControlPanelProps> = ({ roomNames, s
      * HoC functions that call relevant input factories
      */
     const inputForString = (key: string, label: string, Icon: React.ReactElement, width?: string, type?: string) => inputFactory(key, label, getQuery(key), Icon, handleChange(key), width, type);
-    const inputForDate = (key: string, label: string) => dateFactory(key, label, handleChangeForDates(key), getQuery(key));
+    const inputForDate = (key: string, label: string) => dateFactory(key, label, handleChangeForDate(key), getQuery(key));
     const inputForTime = (key: string, label: string) => timeFactory(key, label, handleChangeForTime(key), getQuery(key));
     const inputForAutoComplete = (key: string, label: string, suggestions: Array<string>) => autoCompleteFactory(key, label, handleChange(key), suggestions);
 
@@ -56,7 +56,6 @@ const ControlPanel: React.FunctionComponent<ControlPanelProps> = ({ roomNames, s
      * Factory inputs
      */
     const capacity = inputForString(CAPACITY, 'Capacity', <Groups/>, '15.5ch', 'number');
-    const room = inputForString(ROOM, 'Room', <MeetingRoom />, '15.5ch');
     const fromDate = inputForDate(START_DATE_TIME, 'On');
     const startTime = inputForTime(START_TIME, 'Starts');
     const endTime = inputForTime(END_TIME, 'Ends');
