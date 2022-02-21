@@ -12,9 +12,27 @@ export interface Room {
  */
 export interface Booking {
     bookingId: number,
-    startDateTimeSlot: string,
-    endDateTimeSlot: string
-    room: Room
-    specialRequirements: string,
-    numberOfAttendants: number
+    startDate: string,
+    startTime: string
+    endTime: string,
+    room: Room,
+    capacity: number
+}
+
+export interface UnsavedBooking {
+    startDate?: string,
+    startTime?: string
+    endTime?: string,
+    room?: Room,
+    capacity?: number
+}
+
+export interface BookingServiceProvider {
+    availableRooms: Array<Room>,
+    allBookings: Array<Booking>,
+    currentBookingProcess: UnsavedBooking,
+    getBookings: () => void,
+    getRooms: () => void
+    roomsLoading: boolean,
+    bookingsLoading: boolean
 }

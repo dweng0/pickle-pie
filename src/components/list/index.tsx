@@ -8,5 +8,5 @@ interface ListComponentProps {
     rooms: Array<Room>
 }
 
-const ListComponent: React.FunctionComponent<ListComponentProps> = ({ rooms }) => (<Grid sx={roomList} container spacing={1}> {rooms.map(room => <ListItem room={room} />)} </Grid>);
+const ListComponent: React.FunctionComponent<ListComponentProps> = ({ rooms }) => (<Grid sx={roomList} container spacing={1}> {rooms.map(room => <ListItem key={room.name} room={room} />)} </Grid>);
 export default ListComponent;

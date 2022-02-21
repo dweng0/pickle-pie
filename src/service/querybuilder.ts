@@ -23,12 +23,12 @@ export const pushQuery = (queryParam: UrlQuery): void => {
  * Wraps url search api and provide url decoding
  * @param key
  */
-export const getQuery = (key: string): string => {
-    const queryString = window.location.search;
+export const getQuery = (key: string, search?:string): string => {
+    const queryString = search || window.location.search;
     const result = new URLSearchParams(queryString).get(key);
     if (result) {
         return decodeURIComponent(result.toString());
     } else {
-        return null;
+        return '';
     }    
 }

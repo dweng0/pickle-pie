@@ -1,7 +1,6 @@
 import React, { JSXElementConstructor, ReactElement } from 'react';
 import Box from '@mui/material/Box';
 
-import MeetingRoom from '@mui/icons-material/MeetingRoom';
 import Groups from '@mui/icons-material/Groups';
 import { inputFactory, dateFactory, timeFactory, autoCompleteFactory } from './formfactory';
 import { pushQuery, getQuery} from '../../service/querybuilder';
@@ -9,13 +8,9 @@ import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { ControlPanelProps } from './interface';
 import dayjs from 'dayjs';
-import { URL_DATE_FORMAT, URL_TIME_FORMAT } from '../../constants';
+import { URL_DATE_FORMAT, URL_TIME_FORMAT, URL_KEYS } from '../../constants';
 
-const CAPACITY = 'capacity';
-const START_DATE_TIME = 'from';
-const START_TIME = 'startTime';
-const END_TIME = 'endTime';
-const ROOM = 'room';
+const { CAPACITY, START_DATE_TIME, START_TIME, END_TIME, ROOM } = URL_KEYS;
 
 const ControlPanel: React.FunctionComponent<ControlPanelProps> = ({ roomNames, selectedRoomFromList}) => {
 
