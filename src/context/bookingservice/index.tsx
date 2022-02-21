@@ -8,7 +8,7 @@ import { getQuery } from '../../service/querybuilder';
 
 const BookingServiceContext = createContext<BookingServiceProvider | undefined>(undefined);
 
-const BookingServiceProvider = ({ children }) => {
+export const BookingContextProvider: React.FunctionComponent = ({ children }) => {
 
     const roomFetchService      = useFetch<Array<Room>>(api.rooms);
     const bookingFetchService   = useFetch<Array<Booking>>(api.bookings);
@@ -23,9 +23,9 @@ const BookingServiceProvider = ({ children }) => {
      * WHEN: the params change on the url
      */
     useEffect(() => {
-
+        debugger;
         const buildCurrentBookingFromUrl = (acc, curr) => {
-            acc[curr] = getQuery(curr, location.search);
+            acc[URL_KEYS[curr]] = getQuery(curr, location.search);
             return acc;
         };
 

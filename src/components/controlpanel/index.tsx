@@ -9,11 +9,15 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { ControlPanelProps } from './interface';
 import dayjs from 'dayjs';
 import { URL_DATE_FORMAT, URL_TIME_FORMAT, URL_KEYS } from '../../constants';
+import { useBookingService } from '../../context/bookingservice';
 
 const { CAPACITY, START_DATE_TIME, START_TIME, END_TIME, ROOM } = URL_KEYS;
 
-const ControlPanel: React.FunctionComponent<ControlPanelProps> = ({ roomNames, selectedRoomFromList}) => {
+const ControlPanel: React.FunctionComponent<ControlPanelProps> = () => {
 
+    const { availableRooms } = useBookingService();
+
+    const roomNames = availableRooms.map(room => room.name);
     const handleChange = (key) => (value: any) => {
         pushQuery({ key, value });
     };

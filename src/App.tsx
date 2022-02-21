@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect} from 'react';
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { BookingContextProvider } from './context/bookingservice';
 
 import ColorSwitcher    from "./context/colorswitcher";
 import CircularProgress from '@mui/material/CircularProgress';
@@ -10,7 +11,9 @@ import AppBar           from "./components/appbar";
 import ControlPanel     from "./components/controlpanel";
 import BookingState     from './components/bookingstage';
 import ListComponent    from './components/list';
+
 import './App.css';
+import { BrowserRouter } from 'react-router-dom';
 import logo from './logo.png';
 import { api } from './constants';
 
@@ -63,38 +66,22 @@ const App: React.FunctionComponent = () => {
         [mode],
     );
 
-    const setResponse = (dataFor: 'room' | 'booking') => (response) => response.json().then(data => (dataFor === 'room') ? setRooms(data) : setBookings(data));
-    const handleError = (err) => { setError('Failed to contact server') }
-
-    useEffect(() => {
-        const doFetch = () => {
-            fetch(api.rooms)
-                .then(setResponse('room'))
-                .catch(handleError)
-                .finally(() => setLoading(false));
-
-            fetch(api.bookings)
-                .then(setResponse('booking'))
-                .catch(handleError)
-                .finally(() => setLoading(false));
-        };
-        doFetch();
-    }, []);
-    
-
-
     return (
         <ColorSwitcher.Provider value={colorMode}>
             <ThemeProvider theme={theme}>
                 <Container component="main" maxWidth="xl">
                 <CssBaseline />
                     <AppBar />
-                    <div className="container">
-                        {loading ? <CircularProgress className="splash-image" /> : <img className="splash-image" src={logo} alt="Event Rent Logo" />}
-                        <ControlPanel roomNames={rooms.map(item => item.name)}/>
-                        <BookingState/>
-                        <ListComponent rooms={rooms}/>
-                    </div>
+                    <BrowserRouter>
+                    <BookingContextProvider>
+                        <div className="container">
+                            {loading ? <CircularProgress className="splash-image" /> : <img className="splash-image" src={logo} alt="Event Rent Logo" />}
+                            <ControlPanel />
+                            <BookingState/>
+                            <ListComponent rooms={rooms}/>
+                        </div>
+                    </BookingContextProvider>
+                    </BrowserRouter>
                 </Container>
             </ThemeProvider>
         </ColorSwitcher.Provider>
