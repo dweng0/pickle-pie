@@ -3,9 +3,7 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import {
-    useLocation
-} from "react-router-dom";
+import { useBookingService } from '../../context/bookingservice';
 
 const steps = [
     'Capacity',
@@ -23,16 +21,19 @@ interface QueryParams  {
 
 const BookingState: React.FunctionComponent = () => {
 
-    let location = useLocation();
-    const [queries, setQueries] = useState();
-    useEffect(() => {
-        console.log(location.search);
-        //set queries based on the search part of the location obj
-    }, [location]);
+    const { currentBookingProcess } = useBookingService()
+    const [activeStep, setActiveStep] = useState(0);
 
+    let currentProcess = 0;
+
+    if (currentBookingProcess.capacity) {
+        currentProcess
+    }
+    
+    
     return (
         <Box sx={{ width: '100%' }}>
-            <Stepper activeStep={1} alternativeLabel>
+            <Stepper activeStep={activeStep} alternativeLabel>
                 {steps.map((label) => (
                     <Step key={label}>
                         <StepLabel>{label}</StepLabel>
