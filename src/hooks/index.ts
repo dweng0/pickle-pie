@@ -34,12 +34,15 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
      * fetch from cache/server depending on age of current dataset
      */
     const get = () => {
-        let performFetch = true;
 
         const now = dayjs();
         const timeDelta = now.diff(lastFetched, "minutes");
 
-        if (timeDelta < fetchCacheTTL) {
+        let performFetch = true;
+
+        if (lastFetched === null) {
+            performFetch = true;
+        } else if (timeDelta < fetchCacheTTL) {
             performFetch = false;
         }
 

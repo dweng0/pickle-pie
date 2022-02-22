@@ -4,7 +4,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { BookingContextProvider } from './context/bookingservice';
 
 import ColorSwitcher    from "./context/colorswitcher";
-import CircularProgress from '@mui/material/CircularProgress';
 import CssBaseline      from "@mui/material/CssBaseline";
 import Container        from "@mui/material/Container";
 import AppBar           from "./components/appbar";
@@ -14,8 +13,6 @@ import ListComponent    from './components/list';
 
 import './App.css';
 import { BrowserRouter } from 'react-router-dom';
-import logo from './logo.png';
-import { api } from './constants';
 
 /**
  * App container handles toggling light/dark mode
@@ -75,7 +72,6 @@ const App: React.FunctionComponent = () => {
                     <BrowserRouter>
                     <BookingContextProvider>
                         <div className="container">
-                            {loading ? <CircularProgress className="splash-image" /> : <img className="splash-image" src={logo} alt="Event Rent Logo" />}
                             <ControlPanel />
                             <BookingState/>
                             <ListComponent rooms={rooms}/>

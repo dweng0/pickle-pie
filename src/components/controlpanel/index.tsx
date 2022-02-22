@@ -7,17 +7,21 @@ import { pushQuery, getQuery} from '../../service/querybuilder';
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { ControlPanelProps } from './interface';
+import CircularProgress from '@mui/material/CircularProgress';
 import dayjs from 'dayjs';
 import { URL_DATE_FORMAT, URL_TIME_FORMAT, URL_KEYS } from '../../constants';
 import { useBookingService } from '../../context/bookingservice';
+
+import logo from './logo.png';
 
 const { CAPACITY, START_DATE_TIME, START_TIME, END_TIME, ROOM } = URL_KEYS;
 
 const ControlPanel: React.FunctionComponent<ControlPanelProps> = () => {
 
-    const { availableRooms } = useBookingService();
+    const { availableRooms, roomsLoading } = useBookingService();
 
-    const roomNames = availableRooms.map(room => room.name);
+    const roomNames = (availableRooms) ? availableRooms.map(room => room.name) : []; 
+
     const handleChange = (key) => (value: any) => {
         pushQuery({ key, value });
     };
@@ -42,7 +46,6 @@ const ControlPanel: React.FunctionComponent<ControlPanelProps> = () => {
         }
     }
 
-
     /**
      * HoC functions that call relevant input factories
      */
@@ -59,17 +62,22 @@ const ControlPanel: React.FunctionComponent<ControlPanelProps> = () => {
     const startTime = inputForTime(START_TIME, 'Starts');
     const endTime = inputForTime(END_TIME, 'Ends');
     const roomAutoComplete = inputForAutoComplete(ROOM, 'Rooms', roomNames)
-    
+
     return (
-        <Box>
-            {capacity}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                {fromDate}
-                {startTime}
-                {endTime}
-            </LocalizationProvider>
-            {roomAutoComplete}
-        </Box>
+        <>
+            <div style={{minHeight: "180px"}}>
+                {roomsLoading ? <CircularProgress className="splash-image" /> : <img className="splash-image" src={logo} alt="Event Rent Logo" />}
+            </div>
+            <Box>
+                {capacity}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    {fromDate}
+                    {startTime}
+                    {endTime}
+                </LocalizationProvider>
+                {roomAutoComplete}
+            </Box>
+        </>
     )
 }
 

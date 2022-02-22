@@ -17,7 +17,7 @@ describe("testing the control panel", () => {
         const spy = jest.spyOn(inputFactory, 'dateFactory');
 
         //execute
-        const { getByLabelText } = render(<ControlPanel roomNames={[]} />);
+        const { getByLabelText } = render(<ControlPanel />);
 
         //verify
         expect(getByLabelText("On")).toBeInTheDocument();
@@ -29,7 +29,7 @@ describe("testing the control panel", () => {
         const roomName = [];
         const spy = jest.spyOn(inputFactory, 'timeFactory');
         //execute
-        const { getByLabelText } = render(<ControlPanel roomNames={[]} />);
+        const { getByLabelText } = render(<ControlPanel />);
 
         //verify
         expect(spy).toHaveBeenCalled();
@@ -40,7 +40,7 @@ describe("testing the control panel", () => {
         const roomName = [];
         const spy = jest.spyOn(inputFactory, 'inputFactory');
         //execute
-        const { getByLabelText } = render(<ControlPanel roomNames={[]} />);
+        const { getByLabelText } = render(<ControlPanel />);
 
         //verify
         expect(spy).toHaveBeenCalled();
@@ -51,7 +51,7 @@ describe("testing the control panel", () => {
         const roomName = [];
         const spy = jest.spyOn(inputFactory, 'autoCompleteFactory');
         //execute
-        const { getByLabelText } = render(<ControlPanel roomNames={[]} />);
+        const { getByLabelText } = render(<ControlPanel />);
 
         //verify
         expect(spy).toHaveBeenCalled();

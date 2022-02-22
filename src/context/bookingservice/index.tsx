@@ -51,7 +51,7 @@ export const BookingContextProvider: React.FunctionComponent = ({ children }) =>
     );
 }
 
-export const useBookingService = () => {
+export const useBookingService = (): BookingServiceProvider => {
     const context = useContext(BookingServiceContext);
 
     if (context === undefined) {
