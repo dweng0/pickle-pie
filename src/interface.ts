@@ -32,7 +32,8 @@ export interface BookingServiceProvider {
     allBookings: Array<Booking>,
     currentBookingProcess: UnsavedBooking,
     getBookings: () => void,
-    getRooms: () => void
+    getRooms: () => void,
+    updateBooking: (booking: UnsavedBooking) => void
     roomsLoading: boolean,
     bookingsLoading: boolean
 }

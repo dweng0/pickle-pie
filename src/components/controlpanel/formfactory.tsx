@@ -82,6 +82,7 @@ export const autoCompleteFactory = (key: string, label: string, onChange, list) 
                 id={key}
                 options={list}
                 renderInput={(params) => <TextField {...params} label={label} />}
+                onChange={(e) => onChange(e.currentTarget.innerHTML)}
             />
         </FormControl>
     );

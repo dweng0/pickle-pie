@@ -19,10 +19,6 @@ import { BrowserRouter } from 'react-router-dom';
  */
 const App: React.FunctionComponent = () => {
 
-    const [rooms, setRooms] = useState([]);
-    const [bookings, setBookings] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string>();
     /** 
     * ************************************************************************
     *  Handle toggling of dark mode and light mode
@@ -74,7 +70,7 @@ const App: React.FunctionComponent = () => {
                         <div className="container">
                             <ControlPanel />
                             <BookingState/>
-                            <ListComponent rooms={rooms}/>
+                            <ListComponent/>
                         </div>
                     </BookingContextProvider>
                     </BrowserRouter>

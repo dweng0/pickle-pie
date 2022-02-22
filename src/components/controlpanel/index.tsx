@@ -18,18 +18,25 @@ const { CAPACITY, START_DATE_TIME, START_TIME, END_TIME, ROOM } = URL_KEYS;
 
 const ControlPanel: React.FunctionComponent<ControlPanelProps> = () => {
 
-    const { availableRooms, roomsLoading } = useBookingService();
+    const { availableRooms, roomsLoading, updateBooking, currentBookingProcess } = useBookingService();
 
-    const roomNames = (availableRooms) ? availableRooms.map(room => room.name) : []; 
-
+    const roomNames = (availableRooms) ? availableRooms.map(room => room.name) : [];
+    console.log(currentBookingProcess);
     const handleChange = (key) => (value: any) => {
+        //update url
         pushQuery({ key, value });
+
+        //update context
+         updateBooking(Object.fromEntries([[key, value]]));
     };
 
     const handleChangeForDate = (key) => (value: any) => {
         if (value) {
             try {
                 pushQuery({ key, value: dayjs(value).format(URL_DATE_FORMAT).toString() });
+
+                //update context
+                updateBooking(Object.fromEntries([[key, value]]));
             } catch {
                 console.log('Todo capture failed event');
             }
@@ -40,6 +47,9 @@ const ControlPanel: React.FunctionComponent<ControlPanelProps> = () => {
         if (value) {
             try {
                 pushQuery({ key, value: dayjs(value).format(URL_TIME_FORMAT).toString() });
+
+                //update context
+                updateBooking(Object.fromEntries([[key, value]]));
             } catch {
                 console.log('Todo capture failed event');
             }
