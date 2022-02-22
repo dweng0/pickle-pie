@@ -23,7 +23,7 @@ export interface UnsavedBooking {
     startDate?: string,
     startTime?: string
     endTime?: string,
-    room?: Room,
+    room?: string,
     capacity?: number
 }
 
