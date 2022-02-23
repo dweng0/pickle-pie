@@ -62,7 +62,7 @@ const ControlPanel: React.FunctionComponent<ControlPanelProps> = () => {
     const inputForString = (key: string, label: string, Icon: React.ReactElement, width?: string, type?: string) => inputFactory(key, label, getQuery(key), Icon, handleChange(key), width, type);
     const inputForDate = (key: string, label: string) => dateFactory(key, label, handleChangeForDate(key), getQuery(key));
     const inputForTime = (key: string, label: string) => timeFactory(key, label, handleChangeForTime(key), getQuery(key));
-    const inputForAutoComplete = (key: string, label: string, suggestions: Array<string>) => autoCompleteFactory(key, label, handleChange(key), suggestions);
+    const inputForAutoComplete = (key: string, label: string, suggestions: Array<string>) => autoCompleteFactory(key, label, handleChange(key), suggestions, getQuery(key));
 
     /**
      * Factory inputs

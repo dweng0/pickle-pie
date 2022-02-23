@@ -12,12 +12,6 @@ const steps = [
     'End Time',
     'Room'
 ];
-interface QueryParams  {
-    capacity: number,
-    date: string,
-    from: string,
-    to: string,
-};
 
 const BookingState: React.FunctionComponent = () => {
 

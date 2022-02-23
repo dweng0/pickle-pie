@@ -73,7 +73,7 @@ export const inputFactory = (key: string, label: string, initialValue:string = '
     );   
 }
 
-export const autoCompleteFactory = (key: string, label: string, onChange, list) => {
+export const autoCompleteFactory = (key: string, label: string, onChange, list, defaultValue) => {
     
     return (
         <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" >
@@ -81,6 +81,7 @@ export const autoCompleteFactory = (key: string, label: string, onChange, list) 
                 disablePortal
                 id={key}
                 options={list}
+                defaultValue={defaultValue}
                 renderInput={(params) => <TextField {...params} label={label} />}
                 onChange={(e) => onChange(e.currentTarget.innerHTML)}
             />
