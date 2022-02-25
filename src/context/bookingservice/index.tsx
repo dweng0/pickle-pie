@@ -1,29 +1,83 @@
-import React, { useState, useContext, useEffect, createContext, useReducer } from 'react';
+import React, { useState, useContext, createContext, useReducer } from 'react';
 import { Booking, Room, UnsavedBooking, BookingServiceProvider } from '../../interface';
 import { useFetch } from '../../hooks';
-import { api, URL_KEYS } from '../../constants';
+import { api, URL_DATE_FORMAT, URL_KEYS, URL_TIME_FORMAT } from '../../constants';
 import { useLocation } from 'react-router-dom';
-import { getQuery } from '../../service/querybuilder';
 import { updateProposedBooking } from './reducers';
-
+import dayjs, { Dayjs } from 'dayjs';
+import { getQuery } from '../../service/querybuilder';
 
 const BookingServiceContext = createContext<BookingServiceProvider | undefined>(undefined);
 
 export const BookingContextProvider: React.FunctionComponent = ({ children }) => {
 
     const roomFetchService      = useFetch<Array<Room>>(api.rooms);
-    const bookingFetchService   = useFetch<Array<Booking>>(api.bookings);
+    const bookingFetchService = useFetch<Array<Booking>>(api.bookings);
+    const [warnings, setWarnings] = useState([]);
     const location = useLocation();
 
     roomFetchService.get();
     bookingFetchService.get();
 
+    /**
+     * Takes a string and tries to parse it into a dayjs object, fails gracefully
+     * @param format the proposed format
+     * @param value the string value
+     */
+    const handleDates = (format: string, value: string) => {
+
+        let proposedDate: string | Dayjs = dayjs(value, format);
+        if (!proposedDate.isValid()) {
+            proposedDate = '';
+        }
+        return proposedDate;
+    }
+
+    /**
+     * reducer function to build the unsavedbooking object based off the URL_KEYS provided
+     * @param acc accumulated result
+     * @param curr current item in the index
+     */
     const buildCurrentBookingFromUrl = (acc, curr) => {
-        acc[URL_KEYS[curr]] = getQuery(curr, location.search);
+
+        const key = URL_KEYS[curr];
+
+        let value: string | number | Dayjs = getQuery(key, location.search);
+
+        // parse capacity into a number or default if not possible
+        if (key === 'capacity') {
+            try {
+                value = parseInt(value);
+            } catch {
+                value = 1;
+            }
+        }
+
+        // parse the date or warn that the date is invalid
+        if (key === 'from') {
+
+            value = handleDates(URL_DATE_FORMAT, value as string);
+        }
+
+        // parse the start time
+        if (key === 'startTime') {
+            value = handleDates(URL_TIME_FORMAT, value as string);
+        }
+
+        // parse the end time
+        if (key === 'endTime') {
+            value = handleDates(URL_TIME_FORMAT, value as string);
+        }
+
+        acc[key] = value;
         return acc;
     };
 
-    const booking = Object.keys(URL_KEYS).reduce<UnsavedBooking>(buildCurrentBookingFromUrl, {});    
+    /**
+     * IT: builds an unsavedbooking object from the url query params
+     */
+    const booking = Object.keys(URL_KEYS).reduce<UnsavedBooking>(buildCurrentBookingFromUrl, {});
+
     const [currentBooking, dispatch] = useReducer(updateProposedBooking, booking);
 
     // hoc, callcs action on reducer
@@ -37,7 +91,9 @@ export const BookingContextProvider: React.FunctionComponent = ({ children }) =>
         currentBookingProcess: currentBooking,
         bookingsLoading: bookingFetchService.loading,
         roomsLoading: roomFetchService.loading,
-        updateBooking: updateBooking
+        updateBooking: updateBooking,
+        warnings,
+        setWarnings
     }
 
     return (

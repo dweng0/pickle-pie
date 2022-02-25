@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 /**
  * Represents a resource
  */
@@ -20,9 +22,9 @@ export interface Booking {
 }
 
 export interface UnsavedBooking {
-    startDate?: string,
-    startTime?: string
-    endTime?: string,
+    from?: string | Dayjs,
+    startTime?: string |  Dayjs,
+    endTime?: string | Dayjs,
     room?: string,
     capacity?: number
 }
@@ -35,5 +37,7 @@ export interface BookingServiceProvider {
     getRooms: () => void,
     updateBooking: (booking: UnsavedBooking) => void
     roomsLoading: boolean,
-    bookingsLoading: boolean
+    bookingsLoading: boolean,
+    warnings?: Array<string>,
+    setWarnings: (warnings: Array<string>) => void;
 }

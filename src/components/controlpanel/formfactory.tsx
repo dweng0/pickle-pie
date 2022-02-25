@@ -28,7 +28,6 @@ export const timeFactory = (key: string, label: string, onChange, initialValue: 
 }
 
 export const dateFactory = (key: string, label: string, onChange, initialValue: string = dayjs().format(URL_DATE_FORMAT)) => {
-  
     const [value, setValue] = useState((initialValue) ? dayjs(initialValue, URL_DATE_FORMAT) : null);
     const localOnChange = (value) => {
         setValue(value);
@@ -37,7 +36,9 @@ export const dateFactory = (key: string, label: string, onChange, initialValue: 
     return (
         <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" >
             <MobileDatePicker
+                ignoreInvalidInputs
                 label={label}
+                disablePast
                 inputFormat={URL_DATE_FORMAT}
                 value={value}
                 onChange={localOnChange}
@@ -51,8 +52,19 @@ export const dateFactory = (key: string, label: string, onChange, initialValue: 
 export const inputFactory = (key: string, label: string, initialValue:string = '', Icon: ReactElement, handleChange: (event: any) => void, width: string = '25ch', type='text') => {
     const [value, setValue] = useState(initialValue);
     const onChange = (event) => {
-        setValue(event.target.value);
-        return handleChange(event.target.value);
+        let value;
+        try {
+            value = parseInt(event.target.value, 10);
+        } catch {
+            value = 1;
+        }
+
+        if (value < 1) {
+            value = 1;
+        }
+
+        setValue(value);
+        return handleChange(value);
     }
     return (
         <FormControl sx={{ m: 1, width }} variant="outlined" >
@@ -81,9 +93,9 @@ export const autoCompleteFactory = (key: string, label: string, onChange, list, 
                 disablePortal
                 id={key}
                 options={list}
-                defaultValue={defaultValue}
+                value={defaultValue}
                 renderInput={(params) => <TextField {...params} label={label} />}
-                onChange={(e) => onChange(e.currentTarget.innerHTML)}
+                onChange={(e, value) => onChange(value)}
             />
         </FormControl>
     );

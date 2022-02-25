@@ -21,11 +21,10 @@ const ListComponent: React.FunctionComponent = () => {
     }
 
     //reduce by dates
-    if (currentBookingProcess.startDate && currentBookingProcess.startTime && currentBookingProcess.endTime) {
+    if (currentBookingProcess.from && currentBookingProcess.startTime && currentBookingProcess.endTime) {
         rooms = allBookings.filter(getClashingBookings(currentBookingProcess)).map(booking => booking.room);        
     }
 
-    console.log(rooms.length);
     return (<Grid sx={roomList} container spacing={1}> {rooms.map(room => <ListItem key={room.name} room={room} />)} </Grid>);
 }
 export default ListComponent;

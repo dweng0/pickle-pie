@@ -15,7 +15,7 @@ export const getClashingBookings = (currentBooking: UnsavedBooking) => (booking:
     const startTime = dayjs(booking.startTime);
     const endTime   = dayjs(booking.endTime);
 
-    if (date.isSame(currentBooking.startDate, 'day')) {
+    if (date.isSame(currentBooking.from, 'day')) {
         return startTime.isBetween(currentBooking.startTime, currentBooking.endTime, 'minute')
             || endTime.isBetween(currentBooking.startTime, currentBooking.endTime, 'minute');
     }
