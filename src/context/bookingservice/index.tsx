@@ -1,4 +1,4 @@
-import React, { useState, useContext, createContext, useReducer } from 'react';
+import React, { useState, useContext, createContext, useReducer, useEffect } from 'react';
 import { Booking, Room, UnsavedBooking, BookingServiceProvider } from '../../interface';
 import { useFetch } from '../../hooks';
 import { api, URL_DATE_FORMAT, URL_KEYS, URL_TIME_FORMAT } from '../../constants';
@@ -83,6 +83,65 @@ export const BookingContextProvider: React.FunctionComponent = ({ children }) =>
     // hoc, callcs action on reducer
     const updateBooking = (bookingData: UnsavedBooking) => dispatch({ type: 'update', payload: bookingData });
 
+    const warningBarrier = (earlyWarnings: Array<string>) => {
+        if (currentBooking.startTime && currentBooking.endTime) {
+            const start = dayjs(currentBooking.startTime, URL_TIME_FORMAT);
+            const end = dayjs(currentBooking.endTime, URL_TIME_FORMAT);
+
+            if (!end.isValid()) {
+                earlyWarnings.push('End date is not valid');
+            }
+
+            if (!start.isValid()) {
+                earlyWarnings.push('Start date is not valid');
+            }
+
+            if (end.isBefore(start)) {
+                earlyWarnings.push('End date is set before start date');
+            }
+
+            if (start.isAfter(end)) {
+                earlyWarnings.push('Start date is set before end date');
+            }
+        }
+
+        if (currentBooking.room) {
+            const result = roomFetchService.response.find(item => item.name === currentBooking.room);
+
+            if (!result) {
+                earlyWarnings.push('Could not find the room you have entered');
+            }
+        }
+
+        if (currentBooking.capacity) {
+            if (currentBooking.capacity <= 0) {
+                earlyWarnings.push('There must be atleast one person for a booking. Please update required capacity.');
+            }
+        }
+        if (currentBooking.from) {
+            const date = dayjs(currentBooking.from, URL_DATE_FORMAT);
+            const now = dayjs();
+
+            if (!date.isValid()) {
+                earlyWarnings.push('The provided date for the booking is invalid');
+            }
+
+            if (date.isBefore(now)) {
+                earlyWarnings.push('The provided date is in the past');
+            }
+        }
+    }
+
+    //sanity checks on unsaved booking
+    const earlyWarnings = [];
+    useEffect(() => {
+
+     
+        warningBarrier(earlyWarnings);
+      
+        debugger;
+    }, [currentBooking, warningBarrier, earlyWarnings]);
+
     const value: BookingServiceProvider = {
         availableRooms: roomFetchService.response || [],
         getRooms: roomFetchService.get,
@@ -92,8 +151,7 @@ export const BookingContextProvider: React.FunctionComponent = ({ children }) =>
         bookingsLoading: bookingFetchService.loading,
         roomsLoading: roomFetchService.loading,
         updateBooking: updateBooking,
-        warnings,
-        setWarnings
+        warnings: earlyWarnings
     }
 
     return (

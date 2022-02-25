@@ -22,7 +22,7 @@ declare module 'dayjs' {
 
 export default function HorizontalNonLinearStepper() {
     
-    const { currentBookingProcess }     = useBookingService();
+    const { currentBookingProcess, warnings }     = useBookingService();
     const [activeStep, setActiveStep]   = useState<number>(0);
     const [completed, setCompleted] = useState<Array<IStep>>([]);
     
@@ -67,10 +67,12 @@ export default function HorizontalNonLinearStepper() {
         
         return `You are about to book a timeslot that is ${duration} long. For ${room} on ${date}. For ${capacity} ${pluralOrSingular(capacity)}. Starting at ${start.format(URL_TIME_FORMAT)}`;
     }
+
+    const renderWarnings = (item, index) => <Typography key={index} sx={{ mt: 2, mb: 1 }}>{item}</Typography>
     return (
         <Box sx={{ width: '90%', margin: 'auto' }}>
             <div className={'fade-in'} style={{height: '250px', margin: 'auto', textAlign: 'center' }}>
-                    {allStepsCompleted() ? (
+                    {(allStepsCompleted() && warnings.length === 0)? (
                             <>
                                 <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
                                     {friendlyText()}
@@ -79,7 +81,8 @@ export default function HorizontalNonLinearStepper() {
                                     Submit Booking
                                 </Button>
                             </>
-                    ) : null}
+                ) : null}
+                {warnings.length > 0 ? (<>{warnings.map(renderWarnings)}</>) : null}
                 </div>
                 <Box sx={{ width: '100%' }}>
                     <Stepper nonLinear activeStep={activeStep}>

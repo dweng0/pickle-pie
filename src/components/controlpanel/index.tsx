@@ -18,10 +18,9 @@ const { CAPACITY, START_DATE_TIME, START_TIME, END_TIME, ROOM } = URL_KEYS;
 
 const ControlPanel: React.FunctionComponent<ControlPanelProps> = () => {
 
-    const { availableRooms, roomsLoading, updateBooking, currentBookingProcess, setWarnings, warnings} = useBookingService();
+    const { availableRooms, roomsLoading, updateBooking, currentBookingProcess} = useBookingService();
 
     const roomNames = (availableRooms) ? availableRooms.map(room => room.name) : [];
-    console.log(currentBookingProcess);
 
     const handleChange = (key) => (value: any) => {
         //update url

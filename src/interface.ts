@@ -39,5 +39,4 @@ export interface BookingServiceProvider {
     roomsLoading: boolean,
     bookingsLoading: boolean,
     warnings?: Array<string>,
-    setWarnings: (warnings: Array<string>) => void;
 }
