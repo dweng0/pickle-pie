@@ -6,7 +6,7 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
 
     const [response, setResponse] = useState<T>(null);
     const [error, setError] = useState<Error>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [lastFetched, setLastFetched] = useState<Dayjs>(null);
 
     /**
@@ -51,5 +51,22 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
         }
     }
 
-    return { response, error, get, loading};
+    const post = (data): Promise<Response> => {
+        let postOptions;
+
+        try {
+            postOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+        } catch {
+            console.log('post options malformed');
+        };
+
+        return fetch(url, postOptions);
+    }
+    return { response, error, get, post, loading};
 };

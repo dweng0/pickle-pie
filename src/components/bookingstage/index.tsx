@@ -22,14 +22,14 @@ declare module 'dayjs' {
 
 export default function HorizontalNonLinearStepper() {
     
-    const { currentBookingProcess, warnings }     = useBookingService();
-    const [activeStep, setActiveStep]   = useState<number>(0);
-    const [completed, setCompleted] = useState<Array<IStep>>([]);
-    
+    const { currentBookingProcess, warnings, saveBooking }  = useBookingService();
+    const [activeStep, setActiveStep]                       = useState<number>(0);
+    const [completed, setCompleted]                         = useState<Array<IStep>>([]);
+    const [loading, setLoading] = useState<boolean>(false);
     dayjs.extend(duration);
     dayjs.extend(relativeTime)
 
-    const allStepsCompleted             = () => steps.length === completed.length;
+    const allStepsCompleted = () => steps.length === completed.length;
     const checkCompleteness = (testKey) => {
         const result = completed.find(({key}) => key === testKey);
         return !!(result);
@@ -59,31 +59,31 @@ export default function HorizontalNonLinearStepper() {
 
     const friendlyText = () => {
         const { room, from, startTime, endTime, capacity } = currentBookingProcess;
-        
-        const start     = dayjs(startTime);
-        const end       = dayjs(endTime);
-        const duration  = dayjs.duration(start.diff(end)).humanize();
-        const date      = dayjs(from).format('dddd MMMM D');
-        
-        return `You are about to book a timeslot that is ${duration} long. For ${room} on ${date}. For ${capacity} ${pluralOrSingular(capacity)}. Starting at ${start.format(URL_TIME_FORMAT)}`;
-    }
 
-    const renderWarnings = (item, index) => <Typography key={index} sx={{ mt: 2, mb: 1 }}>{item}</Typography>
+        const start = dayjs(startTime);
+        const end = dayjs(endTime);
+        const duration = dayjs.duration(start.diff(end)).humanize();
+        const date = dayjs(from).format('dddd MMMM D');
+
+        return `You are about to book a timeslot that is ${duration} long. For ${room} on ${date}. For ${capacity} ${pluralOrSingular(capacity)}. Starting at ${start.format(URL_TIME_FORMAT)}`;
+    };
+
     return (
         <Box sx={{ width: '90%', margin: 'auto' }}>
-            <div className={'fade-in'} style={{height: '250px', margin: 'auto', textAlign: 'center' }}>
+            <div className={'fade-in'} style={{height: '250px', margin: 'auto', textAlign: 'center', marginBottom: '60px'}}>
                     {(allStepsCompleted() && warnings.length === 0)? (
                             <>
                                 <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
                                     {friendlyText()}
                                 </Typography>
-                                <Button size="large" variant="contained" color="success">
+                        <Button size="large" variant="contained" color="success" onClick={() => { setLoading(true); saveBooking().then(() => setLoading(false)) }}>
                                     Submit Booking
                                 </Button>
                             </>
                 ) : null}
-                {warnings.length > 0 ? (<>{warnings.map(renderWarnings)}</>) : null}
-                </div>
+                {warnings ? (
+                    <Typography sx={{ mt: 2, mb: 1, color: 'tomato' }}>{warnings}</Typography>) : null}
+            </div>
                 <Box sx={{ width: '100%' }}>
                     <Stepper nonLinear activeStep={activeStep}>
                         {steps.map(({ label, key }, index) => (
@@ -95,6 +95,7 @@ export default function HorizontalNonLinearStepper() {
                         ))}
                     </Stepper>
                 </Box>
+            
         </Box>
         
     );

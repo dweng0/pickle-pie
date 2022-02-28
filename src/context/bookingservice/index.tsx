@@ -6,15 +6,16 @@ import { useLocation } from 'react-router-dom';
 import { updateProposedBooking } from './reducers';
 import dayjs, { Dayjs } from 'dayjs';
 import { getQuery } from '../../service/querybuilder';
+import { Warning } from '@mui/icons-material';
 
 const BookingServiceContext = createContext<BookingServiceProvider | undefined>(undefined);
 
 export const BookingContextProvider: React.FunctionComponent = ({ children }) => {
 
-    const roomFetchService      = useFetch<Array<Room>>(api.rooms);
-    const bookingFetchService = useFetch<Array<Booking>>(api.bookings);
-    const [warnings, setWarnings] = useState([]);
-    const location = useLocation();
+    const roomFetchService          = useFetch<Array<Room>>(api.rooms);
+    const bookingFetchService       = useFetch<Array<Booking>>(api.bookings);
+    const [warnings, setWarnings]   = useState<string>('');
+    const location                  = useLocation();
 
     roomFetchService.get();
     bookingFetchService.get();
@@ -83,10 +84,13 @@ export const BookingContextProvider: React.FunctionComponent = ({ children }) =>
     // hoc, callcs action on reducer
     const updateBooking = (bookingData: UnsavedBooking) => dispatch({ type: 'update', payload: bookingData });
 
-    const warningBarrier = (earlyWarnings: Array<string>) => {
-        if (currentBooking.startTime && currentBooking.endTime) {
-            const start = dayjs(currentBooking.startTime, URL_TIME_FORMAT);
-            const end = dayjs(currentBooking.endTime, URL_TIME_FORMAT);
+    // Sanitize unsaved booking with an error gate
+    const warningBarrier = (booking: UnsavedBooking): string => {
+        const earlyWarnings = [];
+        const { startTime, endTime, from, capacity, room } = booking;
+        if (startTime && endTime) {
+            const start = dayjs(startTime, URL_TIME_FORMAT);
+            const end = dayjs(endTime, URL_TIME_FORMAT);
 
             if (!end.isValid()) {
                 earlyWarnings.push('End date is not valid');
@@ -99,27 +103,24 @@ export const BookingContextProvider: React.FunctionComponent = ({ children }) =>
             if (end.isBefore(start)) {
                 earlyWarnings.push('End date is set before start date');
             }
-
-            if (start.isAfter(end)) {
-                earlyWarnings.push('Start date is set before end date');
-            }
         }
 
-        if (currentBooking.room) {
-            const result = roomFetchService.response.find(item => item.name === currentBooking.room);
+        if (room && roomFetchService.loading === false) {
+            const result = roomFetchService.response.find(item => item.name === room);
 
             if (!result) {
                 earlyWarnings.push('Could not find the room you have entered');
             }
         }
 
-        if (currentBooking.capacity) {
-            if (currentBooking.capacity <= 0) {
+        if (capacity) {
+            if (capacity <= 0) {
                 earlyWarnings.push('There must be atleast one person for a booking. Please update required capacity.');
             }
         }
-        if (currentBooking.from) {
-            const date = dayjs(currentBooking.from, URL_DATE_FORMAT);
+
+        if (from) {
+            const date = dayjs(from, URL_DATE_FORMAT);
             const now = dayjs();
 
             if (!date.isValid()) {
@@ -130,28 +131,54 @@ export const BookingContextProvider: React.FunctionComponent = ({ children }) =>
                 earlyWarnings.push('The provided date is in the past');
             }
         }
+        return earlyWarnings.reduce((msg, currentErr) => {
+            msg += '\n' + currentErr;
+            return msg;
+        }, '');
     }
 
-    //sanity checks on unsaved booking
-    const earlyWarnings = [];
     useEffect(() => {
+        setWarnings(warningBarrier(currentBooking))
+    }, [currentBooking, warningBarrier]);
 
-     
-        warningBarrier(earlyWarnings);
-      
-        debugger;
-    }, [currentBooking, warningBarrier, earlyWarnings]);
+    const saveBooking = (): Promise<Response> => {
+
+        const warnings = warningBarrier(currentBooking);
+        if (warnings) {
+            setWarnings(warnings);
+            return;
+        } 
+        const { endTime, startTime, from, capacity, room }: UnsavedBooking = currentBooking;
+
+        const convert = (possibleDate: string | Dayjs, format): string => {
+            if (typeof possibleDate !== 'string') {
+                return possibleDate.format(format);
+            }
+            return possibleDate;
+        }
+
+        const payload: UnsavedBooking = {
+            capacity,
+            room,
+            startTime: convert(startTime, URL_TIME_FORMAT),
+            endTime: convert(endTime, URL_TIME_FORMAT),
+            from: convert(from, URL_DATE_FORMAT)
+        };
+
+        return bookingFetchService.post(payload);
+    }
 
     const value: BookingServiceProvider = {
         availableRooms: roomFetchService.response || [],
         getRooms: roomFetchService.get,
         allBookings: bookingFetchService.response || [],
         getBookings: bookingFetchService.get,
+        saveBooking,
         currentBookingProcess: currentBooking,
         bookingsLoading: bookingFetchService.loading,
         roomsLoading: roomFetchService.loading,
         updateBooking: updateBooking,
-        warnings: earlyWarnings
+        warnings: warnings
     }
 
     return (

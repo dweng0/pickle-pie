@@ -34,9 +34,10 @@ export interface BookingServiceProvider {
     allBookings: Array<Booking>,
     currentBookingProcess: UnsavedBooking,
     getBookings: () => void,
+    saveBooking: () => Promise<Response>,
     getRooms: () => void,
     updateBooking: (booking: UnsavedBooking) => void
     roomsLoading: boolean,
     bookingsLoading: boolean,
-    warnings?: Array<string>,
+    warnings?: string,
 }
